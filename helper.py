@@ -24,6 +24,11 @@ parser.add_argument(
 )
 
 API_URL = "https://api.fontawesome.com"
+ICON_NAME_CORRECTIONS = {
+    "circleapore-dollar": "circle-singapore-dollar",
+    "signapore-dollar-sign": "singapore-dollar-sign",
+    "squareapore-dollar": "square-singapore-dollar",
+}
 QUERY_TEMPLATE = """
 query {{
     release (version: "{version}") {{
@@ -71,6 +76,10 @@ def fetch_icons(version: str) -> Set[Tuple[str, str]]:
         if icon["aliases"]:
             for alias in icon["aliases"]["names"]:
                 icon_unicode_set.add((alias, icon["unicode"]))
+
+    for icon_id, unicode_char in tuple(icon_unicode_set):
+        if icon_id in ICON_NAME_CORRECTIONS:
+            icon_unicode_set.add((ICON_NAME_CORRECTIONS[icon_id], unicode_char))
 
     return icon_unicode_set
 
